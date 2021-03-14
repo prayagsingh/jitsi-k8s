@@ -1,0 +1,216 @@
+#author : Cong cong@cannabis.wiki
+#this script will create following deployments in a single pod.
+# 1. prosody
+# 2. jitsi web
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    k8s-app: jitsi
+  name: jitsi-web
+  namespace: jitsi
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      k8s-app: jitsi-web
+  template:
+    metadata:
+      labels:
+        k8s-app: jitsi-web
+    spec:
+      containers:
+        - name: web
+          image: jitsi/web:stable-5390-3
+          resources:
+            limits:
+              memory: 1000Mi
+              cpu: 1000m
+            requests:
+              memory: 300Mi
+              cpu: 400m 
+          volumeMounts:
+            #- mountPath: /defaults/config.js
+            #  name: web-config
+            #  subPath: config.js
+            - mountPath: /defaults/interface_config.js
+              name: web-config
+              subPath: interface_config.js
+            - mountPath: /etc/cont-init.d/10-config
+              name: web-config
+              subPath: 10-config
+            - mountPath: /defaults/meet.conf
+              name: web-config
+              subPath: meet.conf
+          imagePullPolicy: Always
+          env:
+            - name: DISABLE_HTTPS
+              value: "1"
+            - name: ENABLE_XMPP_WEBSOCKET
+              value: "1"
+            - name: ENABLE_P2P
+              value: "false"
+            - name: ENABLE_SIMULCAST
+              value: "true"
+            - name: ENABLE_REMB
+              value: "true"
+            - name: ENABLE_TCC
+              value: "true"    
+            - name: XMPP_SERVER
+              valueFrom:
+                configMapKeyRef:
+                  name: jitsi-config
+                  key: XMPP_SERVER   
+            - name: JICOFO_AUTH_USER
+              value: focus
+            - name: XMPP_DOMAIN
+              value: meet.jitsi
+            - name: XMPP_AUTH_DOMAIN
+              value: auth.meet.jitsi
+            - name: XMPP_INTERNAL_MUC_DOMAIN
+              value: internal-muc.meet.jitsi
+            - name: PUBLIC_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: jitsi-config
+                  key: PUBLIC_URL
+            - name: XMPP_BOSH_URL_BASE
+              valueFrom:
+                configMapKeyRef:
+                  name: jitsi-config
+                  key: XMPP_BOSH_URL_BASE
+            - name: XMPP_MUC_DOMAIN
+              value: muc.meet.jitsi
+            - name: TZ
+              valueFrom:
+                configMapKeyRef:
+                  name: jitsi-config
+                  key: TZ
+            - name: JVB_TCP_HARVESTER_DISABLED
+              value: "true"
+            - name: SHARD_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: web-shard-config
+                  key: SHARD_NAME
+            - name: OCTO_REGION
+              valueFrom:
+                configMapKeyRef:
+                  name: web-shard-config
+                  key: OCTO_REGION
+            - name: USER_REGION
+              valueFrom:
+                configMapKeyRef:
+                  name: web-shard-config
+                  key: USER_REGION
+            - name: TESTING_OCTO_PROBABILITY
+              value: "1"
+            - name: START_AUDIO_MUTED
+              value: "4"
+        - name: prosody
+          image: jitsi/prosody:stable-5390-3
+          imagePullPolicy: Always
+          resources:
+            limits:
+              memory: 1000Mi
+              cpu: 1000m
+            requests:
+              memory: 300Mi
+              cpu: 300m
+          volumeMounts:
+            - mountPath: /prosody-plugins-custom/mod_token_moderation.lua
+              name: web-config
+              subPath: mod_token_moderation.lua
+            - mountPath: /defaults/conf.d/jitsi-meet.cfg.lua
+              name: web-config
+              subPath: jitsi-meet.cfg.lua
+          env:
+            - name: ENABLE_XMPP_WEBSOCKET
+              value: "1"
+            - name: XMPP_DOMAIN
+              value: meet.jitsi
+            - name: XMPP_AUTH_DOMAIN
+              value: auth.meet.jitsi
+            - name: XMPP_MUC_DOMAIN
+              value: muc.meet.jitsi
+            - name: XMPP_INTERNAL_MUC_DOMAIN
+              value: internal-muc.meet.jitsi
+            - name: JICOFO_COMPONENT_SECRET
+              valueFrom:
+                configMapKeyRef:
+                  name: jitsi-config
+                  key: JICOFO_COMPONENT_SECRET
+            - name: JVB_AUTH_USER
+              value: jvb
+            - name: JVB_AUTH_PASSWORD
+              valueFrom:
+                configMapKeyRef:
+                  name: jitsi-config
+                  key: JVB_AUTH_PASSWORD
+            - name: JICOFO_AUTH_USER
+              value: focus
+            - name: JICOFO_AUTH_PASSWORD
+              valueFrom:
+                configMapKeyRef:
+                  name: jitsi-config
+                  key: JICOFO_AUTH_PASSWORD
+            - name: TZ
+              valueFrom:
+                configMapKeyRef:
+                  name: jitsi-config
+                  key: TZ
+            - name: JWT_APP_ID
+              valueFrom:
+                configMapKeyRef:
+                  name: jitsi-config
+                  key: JWT_APP_ID
+            - name: JWT_APP_SECRET
+              valueFrom:
+                configMapKeyRef:
+                  name: jitsi-config
+                  key: JWT_APP_SECRET
+            - name: JWT_ACCEPTED_ISSUERS
+              valueFrom:
+                configMapKeyRef:
+                  name: jitsi-config
+                  key: JWT_ACCEPTED_ISSUERS
+            - name: PUBLIC_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: jitsi-config
+                  key: PUBLIC_URL
+            - name: JVB_TCP_HARVESTER_DISABLED
+              value: "true"
+            - name: ENABLE_AUTH
+              value: "0"
+            - name: ENABLE_GUESTS
+              value: "false"
+            - name: AUTH_TYPE
+              value: jwt
+            - name: JWT_ALLOW_EMPTY
+              value: "0"
+            - name: JWT_AUTH_TYPE
+              value: token
+            - name: JWT_TOKEN_AUTH_MODULE
+              value: token_verification
+      volumes:
+        - name: web-config
+          configMap:
+            name: web-base
+            defaultMode: 0777
+            items:
+              - key: config.js
+                path: config.js
+              - key: interface_config.js
+                path: interface_config.js
+              - key: 10-config
+                path: 10-config
+              - key: meet.conf
+                path: meet.conf
+              - key: mod_token_moderation.lua
+                path: mod_token_moderation.lua
+              - key: jitsi-meet.cfg.lua
+                path: jitsi-meet.cfg.lua

@@ -1,0 +1,46 @@
+# @author dushmanthab99@gmail.com
+# service for web
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    service: web
+  name: web
+  namespace: jitsi
+  #annotations:
+    #service.beta.kubernetes.io/do-loadbalancer-certificate-id: 
+spec:
+  type: ClusterIP
+  ports:
+    - name: "http"
+      protocol: TCP
+      port: 80
+      targetPort: 80
+      #nodePort: 30080
+    # - name: "https"
+    #   protocol: TCP
+    #   port: 443
+    #   #nodePort: 30443
+    #   targetPort: 80
+    # - name: "ws"
+    #   protocol: TCP
+    #   port: 8443
+    #   #nodePort: 30843
+    #   targetPort: 80
+    - name: "muc"
+      protocol: TCP
+      port: 5347
+      #nodePort: 30347
+      targetPort: 5347
+    - name: "c2s"
+      protocol: TCP
+      port: 5222
+      #nodePort: 30222
+      targetPort: 5222
+    - name: "5280"
+      protocol: TCP
+      port: 5280
+      #nodePort: 30280
+      targetPort: 5280
+  selector:
+    k8s-app: jitsi-web

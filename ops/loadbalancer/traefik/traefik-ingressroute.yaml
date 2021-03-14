@@ -1,0 +1,20 @@
+# To give access to the dashboard via a url secured by a Let's Encrypt certificate, you must declare an Ingress
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: traefik-web-ui
+  namespace: kube-system
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`update_this`) && (PathPrefix(`/api/`) || PathPrefix(`/dashboard/`))
+      kind: Rule
+      services:
+        - name:  api@internal #traefik-ingress-service-clusterip
+          kind: TraefikService
+        # - name: traefik-ingress-service-clusterip
+        #   port: 8080
+  tls:
+    secretName: jitsi-tls

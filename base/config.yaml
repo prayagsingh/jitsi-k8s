@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: jitsi
+  name: jitsi-config
+data:
+  TZ: America/Los_Angeles
+  XMPP_SERVER: web
+  PUBLIC_URL: update_this
+  XMPP_BOSH_URL_BASE: http://web:5280
+  DOCKER_HOST_ADDRESS: update_this 
+  JICOFO_COMPONENT_SECRET: update_this base64 encoded
+  JVB_AUTH_PASSWORD: update_this
+  JICOFO_AUTH_PASSWORD: update_this
+  JWT_APP_ID: update_this
+  JWT_APP_SECRET: update_this
+  JWT_ACCEPTED_ISSUERS: my_web_client,my_app_client

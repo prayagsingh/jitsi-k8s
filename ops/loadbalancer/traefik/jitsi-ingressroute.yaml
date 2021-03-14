@@ -1,0 +1,20 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: ingressroute
+  namespace: jitsi
+spec:
+  entryPoints:
+    - web
+    - websecure
+  routes:
+  - match: Host(`update_this`)
+    kind: Rule
+    services:
+    - name: web
+      port: 80
+  tls:
+    secretName: jitsi-tls
+    #certResolver: myresolver
+---
+
