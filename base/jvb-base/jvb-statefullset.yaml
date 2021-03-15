@@ -3,6 +3,12 @@ kind: StatefulSet
 metadata:
   name: jvb
   namespace: jitsi
+  # needed for metacontroller to create/delete service per pod
+  # https://github.com/metacontroller/metacontroller/tree/master/examples/service-per-pod
+  annotations:
+    service-per-pod-label: "statefulset.kubernetes.io/pod-name"
+    # "port:targetport:nodeport:protocol", "octo-port:octo-targetport:octo-nodeport"
+    service-per-pod-ports: "31000:31000:31000:UDP,30960:30960:30960:UDP,30900:30900:30900:TCP"
 spec:
   serviceName: "jvb" #Do not use '-' in name.
   replicas: 1

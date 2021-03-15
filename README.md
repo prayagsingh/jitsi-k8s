@@ -17,13 +17,27 @@ This separation make sure JVB autoscale not disturbe the Main Jitis Web as I see
 
 JVB nodes need at least 2 cpu (recommended 4).
 
-**NOTE:** I tested it on single node cluster running on CivoCloud. 
+
+**NOTE:** I tested it on multi node cluster running on CivoCloud. K8s setup Configuration is `4 CPU 8GB Memory 25 GB`
 
 # Installation
 
 ### 0. Search for all places in the code marked as: ``<< update_this >> `` and update them!
 
-## 1. Deploy Main Jitsi Web server on kubernetes shard 0:
+## 1. Deploy metacontroller
+
+Apply below command 
+  ```
+    kubectl apply -f ops/metacontroller/metacontroller-namespace.yaml
+    kubectl apply -f ops/metacontroller/metacontroller-crds-v1.yaml
+    kubectl apply -f ops/metacontroller/metacontroller-crds-v1beta1.yaml
+    kubectl apply -f ops/metacontroller/metacontroller-rbac.yaml
+    kubectl apply -f ops/metacontroller/metacontroller.yaml  
+    kubectl apply -f ops/metacontroller/service-per-pod-configmap.yaml
+    kubectl apply -f ops/metacontroller/service-per-pod-deployment.yaml
+  ```
+
+## 2. Deploy Main Jitsi Web server on kubernetes shard 0:
 
 Connect ``kubectl`` to kuberenets shard 0
 
@@ -52,11 +66,15 @@ Go to /base/web-base
     kubectl apply -f web-prosody.yaml
     
     
-## 2. Deploy the JVBs on kubernetes jvb-shard0
+## 3. Deploy the JVBs on kubernetes jvb-shard0
 
 Connect ``kubectl`` to kuberenets jvb-shard0
 
+Make sure udp port open on jvb node: udp 31000-30006 and OCTO udp port 30960 - 30966. with CivoCloud can use firewall with tag start with Kubernetes cluster:.. added by default to apply firewall to all nodes.
+
+
 Make sure udp port open on jvb node: udp 31000-30006 and OCTO udp port 30960 - 30966. with Digitalocean can use firewall with tag start with k8.. added by default to apply firewall to all nodes.
+
     
     kubectl create namespace jitsi
     
@@ -70,16 +88,19 @@ Go to /jvb-base
     
     kubectl apply -f jvb-configmap.yaml
     
-    kubectl apply -f service.yaml
-    
 Go to /shard0/jvb
-    
+
+    kubectl apply -f base/jvb-base/service-per-pod-decoratorcontroller.yaml
+
     kubectl apply -f jvb-statefullset.yaml
+
+For JVB service, we are using a metacontroller which will  dynamically create a service for jvb based on the number of replicas we are running.     
     
 Your Jitsi meet now already available on first region with load balancing JVBs autoscale. Follow next steps to add more region if you have.
 
 
-## 3. Deploy the second Jitsi Web server region on kubernetes shard1 (optional)
+## 4. Deploy the second Jitsi Web server region on kubernetes shard1 (optional)
+
 
 Connect ``kubectl`` to kuberenets shard1
 
@@ -103,7 +124,7 @@ Go to /base/web-base
     
     kubectl apply -f web-prosody.yaml
     
-## 4. Deploy the second JVBs on kubernetes jvb-shard1 for second region (if you have step 3)
+## 5. Deploy the second JVBs on kubernetes jvb-shard1 for second region (if you have step 3)
 
 Connect ``kubectl`` to kuberenets jvb-shard1
 
