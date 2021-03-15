@@ -1,0 +1,12 @@
+# https://github.com/metacontroller/metacontroller/tree/master/manifests/production
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+- metacontroller-namespace.yaml
+- metacontroller-crds-v1.yaml
+- metacontroller-crds-v1beta1.yaml
+- metacontroller-rbac.yaml
+- metacontroller.yaml  
+- service-per-pod-configmap.yaml
+- service-per-pod-deployment.yaml

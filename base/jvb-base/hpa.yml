@@ -6,7 +6,7 @@ metadata:
   name: jvb-pod-scaler
   namespace : jitsi
 spec:
-  maxReplicas: 20
+  maxReplicas: 5
   minReplicas: 1
   scaleTargetRef:
     apiVersion: apps/v1
