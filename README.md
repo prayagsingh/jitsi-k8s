@@ -73,7 +73,7 @@ Connect ``kubectl`` to kuberenets jvb-shard0
 Make sure udp port open on jvb node: udp 31000-30006 and OCTO udp port 30960 - 30966. with CivoCloud can use firewall with tag start with Kubernetes cluster:.. added by default to apply firewall to all nodes.
 
 
-Make sure udp port open on jvb node: udp 31000-30006 and OCTO udp port 30960 - 30966. with Digitalocean can use firewall with tag start with k8.. added by default to apply firewall to all nodes.
+Make sure udp port open on jvb node: udp 31000-30006 and OCTO udp port 30960 - 30966. with CivoCloud can use firewall with tag start with k8.. added by default to apply firewall to all nodes.
 
     
     kubectl create namespace jitsi
