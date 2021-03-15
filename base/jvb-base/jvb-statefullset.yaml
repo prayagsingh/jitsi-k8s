@@ -43,6 +43,10 @@ spec:
             mountPath: /defaults/jvb.conf
             subPath: jvb.conf
           env:
+            - name: ENABLE_JVB_WEBSOCKET
+              value: "1"
+            - name: TESTING_OCTO_PROBABILITY
+              value: "1"
             - name: XMPP_SERVER
               valueFrom:
                 configMapKeyRef:
@@ -93,6 +97,60 @@ spec:
                 configMapKeyRef:
                   name: web-shard-config
                   key: OCTO_REGION
+            - name: JVB_CC_ENABLE
+              value: "false"
+            - name: JVB_BWE_CHANGE_THRESHOLD
+              value: "0.15"
+            - name: JVB_THUMBNAIL_MAX_HEIGHT
+              value: "180"
+            - name: JVB_ONSTAGE_IDEAL_HEIGHT
+              value: "1080"
+            - name: JVB_ONSTAGE_PREF_HEIGHT
+              value: "360"
+            - name: JVB_ONSTAGE_PREF_FRAMERATE
+              value: "30"
+            - name: JVB_ALLOW_OVERSEND_ONSTAGE
+              value: "true"
+            - name: JVB_TRUST_BWE
+              value: "true"
+            - name: JVB_CC_PADDING_PERIOD
+              value: "15ms"
+            - name: JVB_FORWARD_STEAM_RECALCULATION
+              value: "15 seconds"
+            - name: JVB_LAST_N
+              value: "15"
+            - name: JVB_COLIBRI_API_ENABLE
+              value: "true"
+            - name: JVB_API_ENABLE
+              value: "true"
+            - name: JVB_REST_API_ENABLE
+              value: "true"
+            - name: JVB_REST_DEBUG_ENABLE
+              value: "true"
+            - name: JVB_REST_HEALTH_ENABLE
+              value: "true"
+            - name: JVB_REST_SHUTDOWN_ENABLE
+              value: "true"
+            - name: JVB_LOAD_MGMT_ENABLE
+              value: "false"
+            - name: JVB_LOAD_MGMT_REDUCER_ENABLE
+              value: "false"
+            - name: JVB_PKT_RATE_LOAD_THRESHOLD
+              value: "50000"
+            - name: JVB_PKT_RATE_RCVRY_THRESHOLD
+              value: "40000"
+            - name: JVB_LOAD_REDUCER_ENABLE
+              value: "false"
+            - name: JVB_LAST_N_REDUCTION_SCALE
+              value: "0.75"
+            - name: JVB_LAST_N_RECOVER_SCALE
+              value: "1.25"
+            - name: JVB_LAST_N_IMPACT_TIME
+              value: "1 min"
+            - name: "JVB_MIN_LAST_N_VAL"
+              value: "1"
+            - name: JVB_MAX_ENFORCED_LAST_N_VAL
+              value: "40"      
       volumes:
       - name: jvb-config
         configMap:
