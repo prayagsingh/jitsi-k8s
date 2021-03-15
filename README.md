@@ -17,6 +17,7 @@ This separation make sure JVB autoscale not disturbe the Main Jitis Web as I see
 
 JVB nodes need at least 2 cpu (recommended 4).
 
+
 **NOTE:** I tested it on multi node cluster running on CivoCloud. K8s setup Configuration is `4 CPU 8GB Memory 25 GB`
 
 # Installation
@@ -70,6 +71,10 @@ Go to /base/web-base
 Connect ``kubectl`` to kuberenets jvb-shard0
 
 Make sure udp port open on jvb node: udp 31000-30006 and OCTO udp port 30960 - 30966. with CivoCloud can use firewall with tag start with Kubernetes cluster:.. added by default to apply firewall to all nodes.
+
+
+Make sure udp port open on jvb node: udp 31000-30006 and OCTO udp port 30960 - 30966. with Digitalocean can use firewall with tag start with k8.. added by default to apply firewall to all nodes.
+
     
     kubectl create namespace jitsi
     
@@ -95,6 +100,7 @@ Your Jitsi meet now already available on first region with load balancing JVBs a
 
 
 ## 4. Deploy the second Jitsi Web server region on kubernetes shard1 (optional)
+
 
 Connect ``kubectl`` to kuberenets shard1
 
