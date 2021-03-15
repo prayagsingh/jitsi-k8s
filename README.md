@@ -151,7 +151,7 @@ Go to /shard1/jvb
 
 Your scaleable jitsi with octo will be avaiable at the main domain! 
 
-On Digitalocean point your domain to the load balancer created on kuberenets main web and second region one. 
+On CivoCloud point your domain to the load balancer created on kuberenets main web and second region one. 
 
 You can use route53 with regional routing support, this will select best domain for user. Just point 1 domain to both Jitsi Web loadbalancer.
 
