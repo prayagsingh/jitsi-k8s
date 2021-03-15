@@ -1,5 +1,4 @@
 # jitsi-k8s
-# jitsi-k8s
 # jitsi kubernetes scalable service with octo
 
 Jitsi Kubernetes deployment with autoscale JVB and OCTO enabled
