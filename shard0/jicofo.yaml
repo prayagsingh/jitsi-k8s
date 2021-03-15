@@ -22,13 +22,60 @@ spec:
     spec:
       containers:
         - name: jicofo
-          image: jitsi/jicofo:stable-5142
+          image: jitsi/jicofo:stable-5390-3
           volumeMounts:
-          - mountPath: /defaults/sip-communicator.properties
+          - mountPath: /defaults/jicofo.conf
             name: jicofo
-            subPath: sip-communicator.properties
+            subPath: jicofo.conf
           imagePullPolicy: Always
+          resources:
+            limits:
+              memory: 1000Mi
+              cpu: 1000m
+            requests:
+              memory: 400Mi
+              cpu: 400m
           env:
+            - name: AUTH_TYPE
+              value: "jwt"
+            - name: ENABLE_AUTH
+              value: "0"
+            - name: ENABLE_AUTO_OWNER
+              value: "true"  
+            - name: ENABLE_CODEC_VP8
+              value: "true"
+            - name: ENABLE_CODEC_VP9
+              value: "true"
+            - name: ENABLE_CODEC_H264
+              value: "true"
+            - name: ENABLE_SCTP
+              value: "true"
+            - name: MAX_BRIDGE_PARTICIPANTS
+              value: ""  
+            - name: BRIDGE_AVG_PARTICIPANT_STRESS
+              value: ""
+            - name: BRIDGE_STRESS_THRESHOLD
+              value: "0.45" 
+            - name: OCTO_BRIDGE_SELECTION_STRATEGY
+              value: SplitBridgeSelectionStrategy #IntraRegionBridgeSelectionStrategy #SingleBridgeSelectionStrategy
+            - name: JICOFO_ENABLE_BRIDGE_HEALTH_CHECKS
+              value: "true"
+            - name: JICOFO_CONF_INITIAL_PARTICIPANT_WAIT_TIMEOUT
+              value: ""
+            - name: JICOFO_CONF_SINGLE_PARTICIPANT_TIMEOUT
+              value: ""
+            - name: JICOFO_ENABLE_HEALTH_CHECKS
+              value: "true"
+            - name: ENABLE_RECORDING
+              value: "1"
+            - name: JIBRI_REQUEST_RETRIES
+              value: ""
+            - name: ENABLE_JIBRI_SIP
+              value: "0"
+            - name: JIGASI_BREWERY_MUC
+              value: ""
+            - name: JICOFO_SHORT_ID
+              value: "1"
             - name: XMPP_SERVER
               valueFrom:
                 configMapKeyRef:
@@ -40,6 +87,8 @@ spec:
               value: auth.meet.jitsi
             - name: XMPP_INTERNAL_MUC_DOMAIN
               value: internal-muc.meet.jitsi
+            - name: XMPP_MUC_DOMAIN
+              value: muc.meet.jitsi  
             - name: JICOFO_COMPONENT_SECRET
               valueFrom:
                 configMapKeyRef:
@@ -59,12 +108,18 @@ spec:
                   key: TZ
             - name: JVB_BREWERY_MUC
               value: jvbbrewery
+            - name: JIBRI_BREWERY_MUC
+              value: jibribrewery  
+            - name: JIBRI_PENDING_TIMEOUT
+              value: "90"
+            - name: JIGASI_BREWERY_MUC
+              value: jigasibrewery  
       volumes:
         - name: jicofo
           configMap:
             defaultMode: 0775
             name: jicofo-base
             items:
-              - key: sip-communicator.properties
-                path: sip-communicator.properties
+              - key: jicofo.conf
+                path: jicofo.conf
 
